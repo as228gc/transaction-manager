@@ -1,0 +1,19 @@
+{
+  "name": "transaction-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "start": "node ./dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tra-ma": "^1.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
