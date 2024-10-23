@@ -1,6 +1,10 @@
 import { Transaction } from "tra-ma";
 
-export function TransactionInfo(transaction: Transaction) {
+interface TransactionInfoProps {
+  transaction: Transaction
+}
+
+export const TransactionInfo: React.FC<TransactionInfoProps> = ({ transaction }) => {
   return (
     <div className="card">
       <p>Date: {transaction.getDate().toString()}</p>

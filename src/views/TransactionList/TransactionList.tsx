@@ -1,5 +1,6 @@
 import React from "react"
 import { Transaction } from "tra-ma"
+import { TransactionInfo } from "../TransactionInfo/TransactionInfo"
 
 interface TransactionListProps {
   transactions: Transaction[]
@@ -8,8 +9,8 @@ interface TransactionListProps {
 export const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
   return (
     <ul>
-      {transactions.map((transaction, index) => (
-        <li key={index}>{transaction.toString()}</li>
+      {transactions.map((transaction) => (
+        <TransactionInfo transaction={transaction}/>
       ))}
     </ul>
   )
