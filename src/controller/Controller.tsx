@@ -7,9 +7,9 @@ import { ReportView } from "../views/Report/ReportView";
 import { TransactionData } from "../views/TransactionForm/TransactionData";
 
 export function Controller() {
-  const processor = new TransactionProcessor(new Array<Transaction>)
-  const generator = new ReportGenerator(processor)
   const storageManager = new LocalStorageManager()
+  const processor = new TransactionProcessor(storageManager.loadTransactions())
+  const generator = new ReportGenerator(processor)
   const expenseCategories = Object.values(ExpenseCategory)
   const incomeCategories = Object.values(IncomeCategory)
 
@@ -46,12 +46,24 @@ export function Controller() {
     setShowReport(true)
   }
 
-  function handleCreateTransaction(transactionData: TransactionData): void {
+  function handleCreateExpenseTransaction(transactionData: TransactionData): void {
     const transaction = new Transaction(
       new Date(transactionData.date),
       transactionData.amount,
       TransactionType.EXPENSE,
       transactionData.category as ExpenseCategory
+    )
+
+    processor.appendTransaction(transaction)
+    storageManager.storeTransaction(transaction)
+  }
+
+  function handleCreateIncomeTransaction(transactionData: TransactionData): void {
+    const transaction = new Transaction(
+      new Date(transactionData.date),
+      transactionData.amount,
+      TransactionType.INCOME,
+      transactionData.category as IncomeCategory
     )
 
     processor.appendTransaction(transaction)
@@ -80,15 +92,15 @@ export function Controller() {
       <button onClick={handleShowReport}>Create report</button>
       <div>
         {showExpenseForm && (
-          <TransactionForm handleSubmit={handleCreateTransaction} type={TransactionType.EXPENSE} categories={expenseCategories} />
+          <TransactionForm handleSubmit={handleCreateExpenseTransaction} type={TransactionType.EXPENSE} categories={expenseCategories} />
         )}
 
         {showIncomeForm && (
-          <TransactionForm handleSubmit={handleCreateTransaction} type={TransactionType.INCOME} categories={incomeCategories} />
+          <TransactionForm handleSubmit={handleCreateIncomeTransaction} type={TransactionType.INCOME} categories={incomeCategories} />
         )}
 
         {showTransactions && (
-          <TransactionList transactions={storageManager.loadTransactions()}/>
+          <TransactionList transactions={processor.getTransactions()}/>
         )}
 
         {showReport && (
