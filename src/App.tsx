@@ -8,6 +8,7 @@ class App extends React.Component {
   render(): JSX.Element {
     return (
       <>
+        <h1>Transaction manager</h1>
        <Controller></Controller>
       </>
     )
