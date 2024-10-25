@@ -1,0 +1,20 @@
+.content-start{
+  display: flex;
+  align-items: baseline;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.bordered{
+  border-radius: 1rem;
+  border: 2px solid whitesmoke;
+}
+
+.m-2{
+  margin: 2rem auto;
+
+}
+
+.p-2{
+  padding: 2rem;
+}
