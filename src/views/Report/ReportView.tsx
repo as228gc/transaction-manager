@@ -6,7 +6,6 @@ interface ReportViewProps {
 }
 
 export const ReportView: React.FC<ReportViewProps> = ({ report }) => {
-  console.log(report.getExpensesByCategory())
 
   return (
     <div className="bordered content-start m-2 p-2">
@@ -25,7 +24,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ report }) => {
           report.getExpensesByCategory().map((item) => {
             return (
               <li className="content-start">
-                <p>{item['Category']}: {item['TotalAmount']}</p>
+                <p>{item.category}: {item.totalAmount}</p>
               </li>
             )
           })
@@ -38,7 +37,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ report }) => {
           report.getIncomeByCategory().map((item) => {
             return (
               <li className="content-start">
-                <p>{item['Category']}: {item['TotalAmount']}</p>
+                <p>{item.category}: {item.totalAmount}</p>
               </li>
             )
           })

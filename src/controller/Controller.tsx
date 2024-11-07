@@ -1,4 +1,4 @@
-import { ExpenseCategory, IncomeCategory, ReportGenerator, Transaction, TransactionProcessor, TransactionType } from "tra-ma"
+import { ExpenseCategory, IncomeCategory, ReportGenerator, TransactionProcessor, ExpenseTransaction, IncomeTransaction, TransactionType } from "tra-ma"
 import { LocalStorageManager } from "../model/LocalStorageManager/LocalStorageManager";
 import { useState } from "react";
 import { TransactionForm } from "../views/TransactionForm/TransactionForm";
@@ -47,10 +47,9 @@ export function Controller() {
   }
 
   function handleCreateExpenseTransaction(transactionData: TransactionData): void {
-    const transaction = new Transaction(
+    const transaction = new ExpenseTransaction(
       new Date(transactionData.date),
       transactionData.amount,
-      TransactionType.EXPENSE,
       transactionData.category as ExpenseCategory
     )
 
@@ -59,30 +58,15 @@ export function Controller() {
   }
 
   function handleCreateIncomeTransaction(transactionData: TransactionData): void {
-    const transaction = new Transaction(
+    const transaction = new IncomeTransaction(
       new Date(transactionData.date),
       transactionData.amount,
-      TransactionType.INCOME,
       transactionData.category as IncomeCategory
     )
 
     processor.appendTransaction(transaction)
     storageManager.storeTransaction(transaction)
   }
-
-  // function handleTransactionFormSubmit() {
-
-  // }
-
-  // function handleDisplayTransactions(): void {
-
-  // }
-
-  // function handleCreateReport(): void {
-  //   if (processor.getTransactions().length == 0) {
-  //     return
-  //   }
-  // }
 
   return (
     <>

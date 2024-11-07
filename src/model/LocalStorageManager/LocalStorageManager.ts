@@ -1,4 +1,4 @@
-import { ExpenseCategory, IncomeCategory, Transaction, TransactionType } from "tra-ma";
+import { ExpenseCategory, ExpenseTransaction, IncomeCategory, IncomeTransaction, Transaction, TransactionType } from "tra-ma";
 
 export class LocalStorageManager {
   private storage: Storage;
@@ -16,7 +16,7 @@ export class LocalStorageManager {
   public storeTransaction(transaction: Transaction) {
     const transactionJson = {
       amount: transaction.getAmount(),
-      type: transaction.getType(),
+      type: this.determineType(transaction),
       category: transaction.getCategory(),
       date: transaction.getDate(),
     };
@@ -30,6 +30,13 @@ export class LocalStorageManager {
     this.storeTransactionKey(transactionKey);
   }
 
+  private determineType (transaction: Transaction) {
+    if (transaction instanceof ExpenseTransaction) {
+      return TransactionType.EXPENSE
+    }
+    return TransactionType.INCOME
+  }
+
   public loadTransactions(): Array<Transaction> {
     const transactions = new Array<Transaction>();
     this.transactionKeys.forEach((key) => {
@@ -40,16 +47,37 @@ export class LocalStorageManager {
 
       const transactionJson = JSON.parse(transactionString);
 
-      transactions.push(
-        new Transaction(
-          new Date(transactionJson.date),
+      if (this.determineType(transactionJson.type) === TransactionType.EXPENSE) {
+        transactions.push(this.createExpenseTransaction(
+          transactionJson.date,
           transactionJson.amount,
-          transactionJson.type as TransactionType,
-          transactionJson.category as IncomeCategory | ExpenseCategory
-        )
-      );
-    });
+          transactionJson.category
+        ))
+      } else {
+        transactions.push(this.createIncomeTransaction(
+          transactionJson.date,
+          transactionJson.amount,
+          transactionJson.category
+        ))
+      }
+    })
     return transactions;
+  }
+
+  private createIncomeTransaction (date: string, amount: number, category: IncomeCategory) {
+    return new IncomeTransaction(
+      new Date(date),
+      amount,
+      category
+    )
+  }
+
+  private createExpenseTransaction (date: string, amount: number, category: ExpenseCategory) {
+    return new ExpenseTransaction(
+      new Date(date),
+      amount,
+      category
+    )
   }
 
   private getItem(key: string): string | null {

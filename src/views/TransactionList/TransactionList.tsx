@@ -1,6 +1,6 @@
 import React from "react"
 import { Transaction } from "tra-ma"
-import { TransactionInfo } from "../TransactionInfo/TransactionInfo"
+import { TransactionInfo } from "./TransactionInfo/TransactionInfo"
 
 interface TransactionListProps {
   transactions: Transaction[]
