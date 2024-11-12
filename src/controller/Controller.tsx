@@ -109,11 +109,11 @@ export function Controller() {
           <TransactionForm handleSubmit={handleCreateIncomeTransaction} type={TransactionType.INCOME} categories={incomeCategories} />
         )}
 
-        {showTransactions && (
+        {showTransactions && processor.getNumberOfTransactions() > 0 && (
           <TransactionList onDelete={handleDeleteTransaction} transactions={processor.getTransactions()} />
         )}
 
-        {showReport && (
+        {showReport && processor.getNumberOfTransactions() > 0 && (
           <ReportView report={reportGenerator.generateReport()} />
         )}
 
