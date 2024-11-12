@@ -1,15 +1,18 @@
-import { ExpenseCategory, IncomeCategory, ReportGenerator, TransactionProcessor, ExpenseTransaction, IncomeTransaction, TransactionType } from "tra-ma"
+import { ExpenseCategory, IncomeCategory, TransactionProcessor, ExpenseTransaction, IncomeTransaction, TransactionType, ReportGenerator } from "tra-ma"
 import { LocalStorageManager } from "../model/LocalStorageManager/LocalStorageManager";
 import { useState } from "react";
 import { TransactionForm } from "../views/TransactionForm/TransactionForm";
 import { TransactionList } from "../views/TransactionList/TransactionList";
 import { ReportView } from "../views/Report/ReportView";
 import { TransactionData } from "../views/TransactionForm/TransactionData";
+import "./controller.css"
+import { IdGenerator } from "../model/IdGenerator/IdGenerator";
 
 export function Controller() {
+  const idGenerator = new IdGenerator()
   const storageManager = new LocalStorageManager()
   const processor = new TransactionProcessor(storageManager.loadTransactions())
-  const generator = new ReportGenerator(processor)
+  const reportGenerator = new ReportGenerator(processor)
   const expenseCategories = Object.values(ExpenseCategory)
   const incomeCategories = Object.values(IncomeCategory)
 
@@ -47,33 +50,56 @@ export function Controller() {
   }
 
   function handleCreateExpenseTransaction(transactionData: TransactionData): void {
-    const transaction = new ExpenseTransaction(
-      new Date(transactionData.date),
-      transactionData.amount,
-      transactionData.category as ExpenseCategory
-    )
+    try {
+      const transaction = new ExpenseTransaction(
+        new Date(transactionData.date),
+        transactionData.amount,
+        idGenerator.generateTransactionId(),
+        transactionData.category as ExpenseCategory
+      )
 
-    processor.appendTransaction(transaction)
-    storageManager.storeTransaction(transaction)
+      processor.appendTransaction(transaction)
+      storageManager.storeTransaction(transaction)
+      console.log(processor.getTransactions())
+    } catch (error) {
+      console.log("Could not create transaction")
+    }
   }
 
   function handleCreateIncomeTransaction(transactionData: TransactionData): void {
-    const transaction = new IncomeTransaction(
-      new Date(transactionData.date),
-      transactionData.amount,
-      transactionData.category as IncomeCategory
-    )
+    try {
+      const transaction = new IncomeTransaction(
+        new Date(transactionData.date),
+        transactionData.amount,
+        idGenerator.generateTransactionId(),
+        transactionData.category as IncomeCategory
+      )
 
-    processor.appendTransaction(transaction)
-    storageManager.storeTransaction(transaction)
+      processor.appendTransaction(transaction)
+      storageManager.storeTransaction(transaction)
+    } catch (error) {
+      console.log("Could not create transaction")
+    }
+  }
+
+  /**
+   * Handles the request to delete a transaction
+   *
+   * @param id The id of the transaction to delete 
+   */
+  function handleDeleteTransaction(id: string) {
+    processor.deleteById(id)
+    storageManager.deleteTransaction(id)
   }
 
   return (
     <>
-      <button onClick={handleShowExpenseForm}>Create new expense transaction</button>
-      <button onClick={handleShowIncomeForm}>Create new income transaction</button>
-      <button onClick={handleShowTransactions}>Display all transactions</button>
-      <button onClick={handleShowReport}>Create report</button>
+      <div className="button-container">
+        <button onClick={handleShowExpenseForm}>Create new expense transaction</button>
+        <button onClick={handleShowIncomeForm}>Create new income transaction</button>
+        <button onClick={handleShowTransactions}>Display all transactions</button>
+        <button onClick={handleShowReport}>Create report</button>
+      </div>
       <div>
         {showExpenseForm && (
           <TransactionForm handleSubmit={handleCreateExpenseTransaction} type={TransactionType.EXPENSE} categories={expenseCategories} />
@@ -84,11 +110,11 @@ export function Controller() {
         )}
 
         {showTransactions && (
-          <TransactionList transactions={processor.getTransactions()}/>
+          <TransactionList onDelete={handleDeleteTransaction} transactions={processor.getTransactions()} />
         )}
 
         {showReport && (
-          <ReportView report={generator.generateReport()}/>
+          <ReportView report={reportGenerator.generateReport()} />
         )}
 
       </div>

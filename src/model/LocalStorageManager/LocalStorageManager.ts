@@ -2,15 +2,13 @@ import { ExpenseCategory, ExpenseTransaction, IncomeCategory, IncomeTransaction,
 
 export class LocalStorageManager {
   private storage: Storage;
-  private idCounter: number;
-  private transactionKeys: Array<string>;
-  private keyStorage: string;
+  private transactionIds: Array<string>;
+  private idStorage: string;
 
   constructor() {
     this.storage = localStorage;
-    this.idCounter = 0;
-    this.keyStorage = "transactionKeys";
-    this.transactionKeys = this.loadTransactionKeys();
+    this.idStorage = "transactionIds";
+    this.transactionIds = this.loadTransactionIds();
   }
 
   public storeTransaction(transaction: Transaction) {
@@ -21,26 +19,24 @@ export class LocalStorageManager {
       date: transaction.getDate(),
     };
 
-    const transactionKey: string = this.generateTransactionKey();
-
     // Store the transaction JSON in localStorage
-    this.storage.setItem(transactionKey, JSON.stringify(transactionJson));
+    this.storage.setItem(transaction.getId(), JSON.stringify(transactionJson));
 
-    // Update the stored keys
-    this.storeTransactionKey(transactionKey);
+    // Update the stored Ids
+    this.storeTransactionId(transaction.getId());
   }
 
-  private determineType (transaction: Transaction) {
-    if (transaction instanceof ExpenseTransaction) {
-      return TransactionType.EXPENSE
+  private determineType (transaction: string | Transaction): TransactionType {
+    if (typeof transaction === "string") {
+      return transaction === TransactionType.EXPENSE ? TransactionType.EXPENSE : TransactionType.INCOME
     }
-    return TransactionType.INCOME
+    return transaction instanceof ExpenseTransaction ? TransactionType.EXPENSE : TransactionType.INCOME
   }
 
   public loadTransactions(): Array<Transaction> {
     const transactions = new Array<Transaction>();
-    this.transactionKeys.forEach((key) => {
-      const transactionString = this.storage.getItem(key);
+    this.transactionIds.forEach((id) => {
+      const transactionString = this.storage.getItem(id);
       if (transactionString === null) {
         return; // Skip if the transaction does not exist
       }
@@ -48,64 +44,63 @@ export class LocalStorageManager {
       const transactionJson = JSON.parse(transactionString);
 
       if (this.determineType(transactionJson.type) === TransactionType.EXPENSE) {
-        transactions.push(this.createExpenseTransaction(
-          transactionJson.date,
-          transactionJson.amount,
-          transactionJson.category
-        ))
+        transactions.push(this.createExpenseTransaction(transactionJson, id))
       } else {
-        transactions.push(this.createIncomeTransaction(
-          transactionJson.date,
-          transactionJson.amount,
-          transactionJson.category
-        ))
+        transactions.push(this.createIncomeTransaction(transactionJson, id))
       }
     })
     return transactions;
   }
 
-  private createIncomeTransaction (date: string, amount: number, category: IncomeCategory) {
-    return new IncomeTransaction(
-      new Date(date),
-      amount,
-      category
-    )
-  }
-
-  private createExpenseTransaction (date: string, amount: number, category: ExpenseCategory) {
+  private createExpenseTransaction(transactionJson: any, id: string ): ExpenseTransaction {
     return new ExpenseTransaction(
-      new Date(date),
-      amount,
-      category
+      new Date(transactionJson.date),
+      parseInt(transactionJson.amount),
+      id,
+      transactionJson.category as ExpenseCategory
     )
   }
 
-  private getItem(key: string): string | null {
-    return this.storage.getItem(key);
+  private createIncomeTransaction(transactionJson: any, id: string ): IncomeTransaction {
+    return new IncomeTransaction(
+      new Date(transactionJson.date),
+      parseInt(transactionJson.amount),
+      id,
+      transactionJson.category as IncomeCategory
+    )
   }
 
-  private loadTransactionKeys(): Array<string> {
-    const storedKeys = this.getItem(this.keyStorage);
-    if (!storedKeys) {
-      return []; // Return an empty array if no keys are found
+  private getItem(id: string): string | null {
+    return this.storage.getItem(id);
+  }
+
+  private loadTransactionIds(): Array<string> {
+    const storedIds = this.getItem(this.idStorage);
+    if (!storedIds) {
+      return [];
     }
 
     try {
-      return JSON.parse(storedKeys) as Array<string>;
+      return JSON.parse(storedIds) as Array<string>;
     } catch {
-      return []; // Return an empty array if parsing fails
+      return [];
     }
   }
 
-  private storeTransactionKey(key: string) {
-    this.transactionKeys.push(key);
-    this.storage.setItem(this.keyStorage, JSON.stringify(this.transactionKeys));
+  private storeTransactionId(id: string) {
+    this.transactionIds.push(id);
+    this.storage.setItem(this.idStorage, JSON.stringify(this.transactionIds));
   }
 
-  private generateTransactionKey(): string {
-    const currentDate = new Date().toISOString();
-    const key = `transaction-${currentDate}-${this.idCounter}`;
-    this.idCounter++;
-    return key;
+  public deleteTransaction(id: string) {
+    const idIndex = this.transactionIds.findIndex((transactionId) => transactionId === id)
+    this.transactionIds.splice(idIndex, 1)
+    this.storage.setItem(this.idStorage, JSON.stringify(this.transactionIds));
+
+    if (this.transactionIds.length === 0) {
+      this.storage.removeItem(this.idStorage)
+    }
+
+    localStorage.removeItem(id)
   }
 }
