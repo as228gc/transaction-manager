@@ -2,11 +2,6 @@
 
 The TransactionInfo component displays information about a transaction. It shows transaction properties like date, type, category, and amount, and displays a delete button to remove the transaction.
 
-## Features
-
-- Display Transaction Details: Shows information including date, type (expense or income), category, and amount.
-- Delete Transaction: Allows deletion of the transaction with a button that triggers a callback function passed in as a prop.
-
 ## Dependencies
 
 - tra-ma: The classes Transaction, ExpenseTransaction and enum TransactionType.

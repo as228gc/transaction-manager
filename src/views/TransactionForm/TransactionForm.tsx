@@ -4,7 +4,7 @@ import { TransactionData } from "./TransactionData"
 import "./TransactionForm.css"
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({ handleSubmit, categories, type }) => {
-
+  
   const transactionData: TransactionData = {
     amount: 0,
     category: categories[0],
