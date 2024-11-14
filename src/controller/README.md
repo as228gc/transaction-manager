@@ -2,18 +2,11 @@
 
 The Controller component is the main part of a transaction manager app that handles and displays different views for managing transactions. It allows users to create, view, and delete transactions, and it can also generate a report based on the stored data.
 
-## Features
-
-- Transaction creation: Users can create both expense and income transactions.
-- View switching: Allows users to toggle between views for creating transactions, viewing transactions, and generating reports.
-- Local storage: Transactions are saved and gathered from localStorage using the LocalStorageManager class.
-- Report generation: Generates a report based on all stored transactions.
-
 ## Dependencies
 
 * tra-ma: Provides classes such as ExpenseTransaction, IncomeTransaction, TransactionProcessor, and ReportGenerator.
 * LocalStorageManager: Manages transactions in localStorage.
-* IdGenerator: Generates unique IDs for transactions.
+* IdGenerator: Generates ids for transactions.
 
 ### Example
 
