@@ -1,110 +1,96 @@
-import { ExpenseCategory, IncomeCategory, ReportGenerator, Transaction, TransactionProcessor, TransactionType } from "tra-ma"
+import { ExpenseCategory, IncomeCategory, TransactionProcessor, ExpenseTransaction, IncomeTransaction, TransactionType, ReportGenerator } from "tra-ma"
 import { LocalStorageManager } from "../model/LocalStorageManager/LocalStorageManager";
 import { useState } from "react";
 import { TransactionForm } from "../views/TransactionForm/TransactionForm";
 import { TransactionList } from "../views/TransactionList/TransactionList";
 import { ReportView } from "../views/Report/ReportView";
 import { TransactionData } from "../views/TransactionForm/TransactionData";
+import "./controller.css"
+import { IdGenerator } from "../model/IdGenerator/IdGenerator";
 
 export function Controller() {
+  const idGenerator = new IdGenerator()
   const storageManager = new LocalStorageManager()
   const processor = new TransactionProcessor(storageManager.loadTransactions())
-  const generator = new ReportGenerator(processor)
+  const reportGenerator = new ReportGenerator(processor)
   const expenseCategories = Object.values(ExpenseCategory)
   const incomeCategories = Object.values(IncomeCategory)
 
-  const [showExpenseForm, setShowExpenseForm] = useState(false)
-  const [showIncomeForm, setShowIncomeForm] = useState(false)
-  const [showReport, setShowReport] = useState(false)
-  const [showTransactions, setShowTransactions] = useState(false)
-
-  function handleShowExpenseForm() {
-    setShowReport(false)
-    setShowTransactions(false)
-    setShowIncomeForm(false)
-    setShowExpenseForm(true)
+  enum View {
+    EXPENSE_FORM,
+    INCOME_FORM,
+    TRANSACTION_LIST,
+    REPORT
   }
 
-  function handleShowIncomeForm() {
-    setShowReport(false)
-    setShowTransactions(false)
-    setShowExpenseForm(false)
-    setShowIncomeForm(true)
-  }
-
-  function handleShowTransactions() {
-    setShowReport(false)
-    setShowExpenseForm(false)
-    setShowIncomeForm(false)
-    setShowTransactions(true)
-  }
-
-  function handleShowReport() {
-    setShowExpenseForm(false)
-    setShowIncomeForm(false)
-    setShowTransactions(false)
-    setShowReport(true)
-  }
+  const [currentView, setCurrentView] = useState(View.EXPENSE_FORM)
 
   function handleCreateExpenseTransaction(transactionData: TransactionData): void {
-    const transaction = new Transaction(
-      new Date(transactionData.date),
-      transactionData.amount,
-      TransactionType.EXPENSE,
-      transactionData.category as ExpenseCategory
-    )
+    try {
+      const transaction = new ExpenseTransaction(
+        new Date(transactionData.date),
+        transactionData.amount,
+        idGenerator.generateTransactionId(),
+        transactionData.category as ExpenseCategory
+      )
 
-    processor.appendTransaction(transaction)
-    storageManager.storeTransaction(transaction)
+      processor.appendTransaction(transaction)
+      storageManager.storeTransaction(transaction)
+      console.log(processor.getTransactions())
+    } catch (error) {
+      console.log("Could not create transaction")
+    }
   }
 
   function handleCreateIncomeTransaction(transactionData: TransactionData): void {
-    const transaction = new Transaction(
-      new Date(transactionData.date),
-      transactionData.amount,
-      TransactionType.INCOME,
-      transactionData.category as IncomeCategory
-    )
+    try {
+      const transaction = new IncomeTransaction(
+        new Date(transactionData.date),
+        transactionData.amount,
+        idGenerator.generateTransactionId(),
+        transactionData.category as IncomeCategory
+      )
 
-    processor.appendTransaction(transaction)
-    storageManager.storeTransaction(transaction)
+      processor.appendTransaction(transaction)
+      storageManager.storeTransaction(transaction)
+    } catch (error) {
+      console.log("Could not create transaction")
+    }
   }
 
-  // function handleTransactionFormSubmit() {
-
-  // }
-
-  // function handleDisplayTransactions(): void {
-
-  // }
-
-  // function handleCreateReport(): void {
-  //   if (processor.getTransactions().length == 0) {
-  //     return
-  //   }
-  // }
+  /**
+   * Handles the request to delete a transaction
+   *
+   * @param id The id of the transaction to delete 
+   */
+  function handleDeleteTransaction(id: string) {
+    processor.deleteById(id)
+    storageManager.deleteTransaction(id)
+  }
 
   return (
     <>
-      <button onClick={handleShowExpenseForm}>Create new expense transaction</button>
-      <button onClick={handleShowIncomeForm}>Create new income transaction</button>
-      <button onClick={handleShowTransactions}>Display all transactions</button>
-      <button onClick={handleShowReport}>Create report</button>
+      <div className="button-container">
+        <button onClick={() => setCurrentView(View.EXPENSE_FORM)}>Create new expense transaction</button>
+        <button onClick={() => setCurrentView(View.INCOME_FORM)}>Create new income transaction</button>
+        <button onClick={() => setCurrentView(View.TRANSACTION_LIST)}>Display all transactions</button>
+        <button onClick={() => setCurrentView(View.REPORT)}>Create report</button>
+      </div>
       <div>
-        {showExpenseForm && (
+        {currentView === View.EXPENSE_FORM && (
           <TransactionForm handleSubmit={handleCreateExpenseTransaction} type={TransactionType.EXPENSE} categories={expenseCategories} />
         )}
 
-        {showIncomeForm && (
+        {currentView === View.INCOME_FORM && (
           <TransactionForm handleSubmit={handleCreateIncomeTransaction} type={TransactionType.INCOME} categories={incomeCategories} />
         )}
 
-        {showTransactions && (
-          <TransactionList transactions={processor.getTransactions()}/>
+        {currentView === View.TRANSACTION_LIST && processor.getNumberOfTransactions() > 0 && (
+          <TransactionList onDelete={handleDeleteTransaction} transactions={processor.getTransactions()} />
         )}
 
-        {showReport && (
-          <ReportView report={generator.generateReport()}/>
+        {currentView === View.REPORT && processor.getNumberOfTransactions() > 0 && (
+          <ReportView report={reportGenerator.generateReport()} />
         )}
 
       </div>

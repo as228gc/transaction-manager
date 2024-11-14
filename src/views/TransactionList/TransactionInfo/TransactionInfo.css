@@ -1,0 +1,14 @@
+.card{
+  text-align: left;
+  border: 1px solid black;
+  border-radius: .5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+
+#delete-button{
+  background-color: rgb(255, 117, 117);
+  color: white;
+  align-self: flex-start;
+}

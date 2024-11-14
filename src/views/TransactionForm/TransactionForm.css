@@ -1,0 +1,16 @@
+.transaction-input{
+  margin: 2rem;
+  justify-content: start;
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#submit-button{
+  align-self: center;
+  padding: 2rem 4rem;
+  background-color: #DDD;
+}
