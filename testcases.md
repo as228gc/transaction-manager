@@ -30,7 +30,7 @@ Goal: Verify that the user can create an income transaction for each income cate
 #### Expected result:
 - An income transaction for each category appears in the transaction list with the correct details.
 
-### TC3: View All Transactions
+### TC3: View all transactions
 
 Goal: Verify that the user can view a list of all transactions.
 
@@ -41,7 +41,7 @@ Goal: Verify that the user can view a list of all transactions.
 #### Expected result:
 - All transactions (income and expense) are displayed in the list with accurate details for each transaction.
 
-### TC4: View Transactions in a Given Time Span
+### TC4: View transactions in a given time span
 
 Goal: Verify that the user can view transactions within a specific date range.
 
@@ -55,7 +55,7 @@ Goal: Verify that the user can view transactions within a specific date range.
 - Only the transactions that fall within the time span are displayed in the list.
 
 
-### TC5: Generate a Report
+### TC5: Generate a report
 
 Goal: Verify that the user can generate a financial report that includes income, expenses, and summaries for each category.
 
@@ -63,10 +63,10 @@ Goal: Verify that the user can generate a financial report that includes income,
 1. Add multiple transactions with different categories and types (income and expense).
 2. Click on the "Generate Report" button.
 
-#### Expected Result:
+#### Expected result:
 - A report is displayed with total income, total expenses, and categorized breakdowns based on the transaction data.
 
-### TC6: Download Report as PDF
+### TC6: Download report as PDF
 
 Goal: Verify that the user can download the generated report as a PDF file.
 
@@ -76,10 +76,10 @@ Goal: Verify that the user can download the generated report as a PDF file.
 3. Confirm that a PDF file is downloaded to the device.
 4. Open the PDF file and verify that it contains the correct report details (total income, total expenses, and summarized transaction categories).
 
-#### Expected Result:
+#### Expected result:
 - A PDF file is successfully downloaded with correct report data.
 
-### TC7: Data Persistence on Reload
+### TC7: Data persistence on reload
 
 Goal: Verify that transaction data persists when the application is reloaded.
 
@@ -88,5 +88,5 @@ Goal: Verify that transaction data persists when the application is reloaded.
 2. Reload or refresh the application page.
 3. Click on "Display all transactions" to view the transaction list.
 
-#### Expected Result:
+#### Expected result:
 - All previously entered transactions are displayed after the page reload, showing that data has persisted.
