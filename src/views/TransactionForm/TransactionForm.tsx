@@ -3,6 +3,12 @@ import { TransactionFormProps } from "./TransactionFormProps"
 import { TransactionData } from "./TransactionData"
 import "./TransactionForm.css"
 
+/**
+ * Transaction form component
+ *
+ * @param param - Transaction form props
+ * @returns JSX.Element
+ */
 export const TransactionForm: React.FC<TransactionFormProps> = ({ handleSubmit, categories, type }) => {
 
   const transactionData: TransactionData = {
@@ -11,8 +17,14 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ handleSubmit, 
     date: String(new Date())
   }
 
+
   const [formData, setFormData] = useState<TransactionData>(transactionData)
 
+  /**
+   * Handles the category change event
+   *
+   * @param event - The categoyr change event
+   */
   function handleCategoryChange(event: React.ChangeEvent<HTMLSelectElement>) {
     setFormData({
       ...formData,
@@ -20,6 +32,11 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ handleSubmit, 
     })
   }
 
+  /**
+   * Handles the amount change event
+   *
+   * @param event - The amount change event
+   */
   function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFormData({
       ...formData,
@@ -27,6 +44,11 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ handleSubmit, 
     })
   }
 
+  /**
+   * Handles the date change event
+   *
+   * @param event - The date change event
+   */
   function handleDateChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFormData({
       ...formData,
@@ -34,6 +56,11 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ handleSubmit, 
     })
   }
 
+  /**
+   * Handles the form submit event
+   *
+   * @param event - The form submit event
+   */
   function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     handleSubmit(formData)
