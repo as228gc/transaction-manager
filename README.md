@@ -1,50 +1,76 @@
-# React + TypeScript + Vite
+# Transaction Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The Transaction Manager is a web application designed to help users manage their finances by creating, viewing, and categorizing transactions. Users can add both income and expense transactions, view summaries, and generate financial reports based on saved transaction data. The application uses localStorage to save transaction data for persistence.
 
-Currently, two official plugins are available:
+## Components
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. Controller
 
-## Expanding the ESLint configuration
+The Controller component is the main component of the application. It manages state, controls which view to display, and handles events such as creating, deleting, and displaying transactions. It also generates reports based on transaction properties.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 2. TransactionForm
 
-- Configure the top-level `parserOptions` property like this:
+The TransactionForm component displays a form for users to input information for new transactions, including category, amount, and date. This component supports different transaction types (income and expense) and lists categories based on the selected type.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### 3. TransactionList
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+The TransactionList component displays a list of transactions, each displayed as a  TransactionInfo component. It allows users to delete transactions and keeps the list updated with any changes.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### 4. TransactionInfo
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+The TransactionInfo component shows the details of a transaction, such as the date, type, category, and amount. It also displays a delete button to remove the transaction.
+
+### 5. ReportView
+
+The ReportView component displays a financial report with details such as start and end dates, total income, total expenses, and summaries of income and expenses by category.
+
+## Dependencies
+
+- tra-ma: A package providing classes and enums, including Transaction, ExpenseTransaction, IncomeTransaction, TransactionType, and Report.
+- React: A JavaScript library for building user interfaces.
+- localStorage: Used for storing transaction data to persist information across user sessions.
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone git@github.com:as228gc/transaction-manager.git
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+
+   ```bash
+   npm run build
+   ```
+
+   ```bash
+   npm run dev
+   ```
+
+## Usage
+
+After starting the application, users can:
+
+1. Add Transactions: Select "Create new expense transaction" or "Create new income transaction" to open a form for adding a transaction with information like category, amount, and date.
+2. View Transactions: Select "Display all transactions" to see a list of all saved transactions.
+3. Generate a Report: Select "Create report" to view a financial report, which summarizes income, expenses, and categorized income and expenses.
+
+Example:
+```jsx
+
+function App() {
+  return (
+    <div>
+      <h1>Financial Transaction Manager</h1>
+      <Controller />
+    </div>
+  )
+}
 ```
