@@ -5,6 +5,12 @@ interface ReportViewProps {
   report: Report
 }
 
+/**
+ * ReportView component 
+ *
+ * @param param - ReportViewProps
+ * @returns - JSX.Element
+ */
 export const ReportView: React.FC<ReportViewProps> = ({ report }) => {
 
   return (
