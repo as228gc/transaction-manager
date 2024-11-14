@@ -16,38 +16,14 @@ export function Controller() {
   const expenseCategories = Object.values(ExpenseCategory)
   const incomeCategories = Object.values(IncomeCategory)
 
-  const [showExpenseForm, setShowExpenseForm] = useState(false)
-  const [showIncomeForm, setShowIncomeForm] = useState(false)
-  const [showReport, setShowReport] = useState(false)
-  const [showTransactions, setShowTransactions] = useState(false)
-
-  function handleShowExpenseForm() {
-    setShowReport(false)
-    setShowTransactions(false)
-    setShowIncomeForm(false)
-    setShowExpenseForm(true)
+  enum View {
+    EXPENSE_FORM,
+    INCOME_FORM,
+    TRANSACTION_LIST,
+    REPORT
   }
 
-  function handleShowIncomeForm() {
-    setShowReport(false)
-    setShowTransactions(false)
-    setShowExpenseForm(false)
-    setShowIncomeForm(true)
-  }
-
-  function handleShowTransactions() {
-    setShowReport(false)
-    setShowExpenseForm(false)
-    setShowIncomeForm(false)
-    setShowTransactions(true)
-  }
-
-  function handleShowReport() {
-    setShowExpenseForm(false)
-    setShowIncomeForm(false)
-    setShowTransactions(false)
-    setShowReport(true)
-  }
+  const [currentView, setCurrentView] = useState(View.EXPENSE_FORM)
 
   function handleCreateExpenseTransaction(transactionData: TransactionData): void {
     try {
@@ -95,25 +71,25 @@ export function Controller() {
   return (
     <>
       <div className="button-container">
-        <button onClick={handleShowExpenseForm}>Create new expense transaction</button>
-        <button onClick={handleShowIncomeForm}>Create new income transaction</button>
-        <button onClick={handleShowTransactions}>Display all transactions</button>
-        <button onClick={handleShowReport}>Create report</button>
+        <button onClick={() => setCurrentView(View.EXPENSE_FORM)}>Create new expense transaction</button>
+        <button onClick={() => setCurrentView(View.INCOME_FORM)}>Create new income transaction</button>
+        <button onClick={() => setCurrentView(View.TRANSACTION_LIST)}>Display all transactions</button>
+        <button onClick={() => setCurrentView(View.REPORT)}>Create report</button>
       </div>
       <div>
-        {showExpenseForm && (
+        {currentView === View.EXPENSE_FORM && (
           <TransactionForm handleSubmit={handleCreateExpenseTransaction} type={TransactionType.EXPENSE} categories={expenseCategories} />
         )}
 
-        {showIncomeForm && (
+        {currentView === View.INCOME_FORM && (
           <TransactionForm handleSubmit={handleCreateIncomeTransaction} type={TransactionType.INCOME} categories={incomeCategories} />
         )}
 
-        {showTransactions && processor.getNumberOfTransactions() > 0 && (
+        {currentView === View.TRANSACTION_LIST && processor.getNumberOfTransactions() > 0 && (
           <TransactionList onDelete={handleDeleteTransaction} transactions={processor.getTransactions()} />
         )}
 
-        {showReport && processor.getNumberOfTransactions() > 0 && (
+        {currentView === View.REPORT && processor.getNumberOfTransactions() > 0 && (
           <ReportView report={reportGenerator.generateReport()} />
         )}
 
