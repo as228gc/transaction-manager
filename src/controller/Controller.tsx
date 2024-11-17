@@ -36,7 +36,6 @@ export function Controller() {
 
       processor.appendTransaction(transaction)
       storageManager.storeTransaction(transaction)
-      console.log(processor.getTransactions())
     } catch (error) {
       console.log("Could not create transaction")
     }
