@@ -16,13 +16,12 @@ export class IdGenerator {
   /**
    * Generates a transaction id.
    *
-   * @returns A generated transaction id
+   * @returns A transaction id
    */
   public generateTransactionId():string {
-    const currentDate = new Date().toISOString();
-    const key = `transaction-${currentDate}-${this.idCounter}`;
-    console.log(key)
-    this.idCounter++;
-    return key;
+    const currentDate = new Date().toISOString()
+    const key = `transaction-${currentDate}-${this.idCounter}`
+    this.idCounter++
+    return key
   }
 }
