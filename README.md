@@ -74,3 +74,6 @@ function App() {
   )
 }
 ```
+
+## License
+This repository is licensed with a MIT license. For mor information, read [LICENSE](/LICENSE).
